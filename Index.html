@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แผนออกกำลังกาย 30 วัน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #e8ff00;
+    --accent2: #ff4444;
+    --text: #f0f0f0;
+    --muted: #666;
+    --green: #39ff14;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sarabun', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: #000;
+    border-bottom: 3px solid var(--accent);
+    padding: 16px 20px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-coach {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .header-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.6rem;
+    letter-spacing: 4px;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(232,255,0,0.3);
+  }
+
+  .header-member {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .header-member-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .member-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #444;
+    color: #fff;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 2px 4px;
+    outline: none;
+    min-width: 140px;
+    max-width: 240px;
+    transition: border-color 0.2s;
+  }
+
+  .member-input:focus { border-bottom-color: var(--accent); color: var(--accent); }
+  .member-input::placeholder { color: #444; font-weight: 400; }
+
+  .header-fields {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .header-field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-field-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 160px;
+  }
+
+  .header-field-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #fff;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .header-field-input:focus { border-bottom-color: var(--accent); }
+  .header-field-input::placeholder { color: #3a3a3a; }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    background: var(--surface);
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .sync-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .sync-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* LAYOUT */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  /* DAY NAV */
+  .day-nav {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .day-btn {
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 600;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .day-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .day-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  .day-btn.done::after {
+    content: '';
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+  }
+
+  /* DAY CARD */
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .day-header {
+    background: var(--surface);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .day-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .day-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .category-badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .cat-chest    { background: #ff4444; color: #fff; }
+  .cat-back     { background: #4488ff; color: #fff; }
+  .cat-legs     { background: #ff8800; color: #fff; }
+  .cat-shoulder { background: #aa44ff; color: #fff; }
+  .cat-core     { background: #00ccaa; color: #000; }
+  .cat-cardio   { background: var(--accent); color: #000; }
+  .cat-rest     { background: #333; color: var(--muted); }
+  .cat-arms     { background: #ff44aa; color: #fff; }
+  .cat-full     { background: #ff6600; color: #fff; }
+
+  /* MUSCLE PILLS */
+  .muscle-picker {
+    padding: 14px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .muscle-pill {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.35;
+    transition: opacity 0.15s, transform 0.1s;
+    user-select: none;
+  }
+
+  .muscle-pill.active { opacity: 1; transform: scale(1.06); }
+  .muscle-pill:hover { opacity: 0.8; }
+
+  /* SELECT ROW */
+  .select-row {
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .select-group label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+
+  select:focus { outline: none; border-color: var(--accent); }
+
+  /* SETS TABLE */
+  .sets-table {
+    padding: 16px 20px;
+  }
+
+  .sets-header {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr 60px;
+    gap: 8px;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .sets-header span {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .set-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr 60px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.1s;
+  }
+
+  .set-row:last-child { border-bottom: none; }
+
+  .set-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .set-row.completed .set-label { color: var(--green); }
+
+  input[type="number"], input[type="text"] {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+    transition: border-color 0.15s;
+  }
+
+  input:focus { outline: none; border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+
+  .check-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    margin: 0 auto;
+  }
+
+  .check-btn:hover { border-color: var(--green); }
+  .check-btn.done { background: var(--green); border-color: var(--green); }
+
+  .check-btn svg { width: 16px; height: 16px; }
+
+  /* NOTES */
+  .notes-row {
+    padding: 0 20px 16px;
+  }
+
+  .notes-row label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.85rem;
+    resize: none;
+    height: 60px;
+    transition: border-color 0.15s;
+  }
+
+  textarea:focus { outline: none; border-color: var(--accent); }
+
+  /* ACTION ROW */
+  .action-row {
+    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    flex: 1;
+  }
+
+  .btn-primary:hover { filter: brightness(1.1); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* EMPTY REST DAY */
+  .rest-card {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+
+  .rest-icon { font-size: 3rem; margin-bottom: 12px; }
+  .rest-card h3 { font-size: 1.2rem; color: var(--text); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .day-nav { grid-template-columns: repeat(6, 1fr); }
+    .sets-header, .set-row { grid-template-columns: 40px 1fr 1fr 50px; }
+    header h1 { font-size: 1.4rem; }
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: #000;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* CHECKIN CARD */
+  .checkin-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .checkin-header {
+    background: var(--surface);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .checkin-body {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .checkin-item label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* Readiness slider */
+  .readiness-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .readiness-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  .readiness-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .readiness-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    min-width: 32px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* Toggle chips */
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .chip.selected { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  /* Hours input inline */
+  .hours-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .hours-row input[type="number"] {
+    width: 70px;
+    text-align: center;
+  }
+
+  .hours-row span {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* Illness textarea */
+  .illness-input {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.85rem;
+    resize: none;
+    height: 48px;
+    transition: border-color 0.15s;
+  }
+
+  .illness-input:focus { outline: none; border-color: var(--accent); }
+
+  /* EXERCISE SEARCH */
+  .ex-search-wrap {
+    position: relative;
+  }
+
+  .ex-search-input {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px 9px 36px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.15s;
+    text-align: left;
+  }
+
+  .ex-search-input:focus { outline: none; border-color: var(--accent); }
+
+  .ex-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+
+  .ex-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: #222;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    z-index: 50;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .ex-dropdown-item {
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border-bottom: 1px solid #2a2a2a;
+    transition: background 0.1s;
+  }
+
+  .ex-dropdown-item:last-child { border-bottom: none; }
+  .ex-dropdown-item:hover { background: #2e2e2e; }
+  .ex-dropdown-item mark { background: transparent; color: var(--accent); font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-coach">Workout with Coach Captain</div>
+  <div class="header-logo">💪 WORKOUT LOG</div>
+  <div class="header-member">
+    <span class="header-member-label">Member</span>
+    <input class="member-input" id="memberInput" type="text" placeholder="พิมพ์ชื่อของคุณ..." oninput="saveMember(this.value)">
+  </div>
+  <div class="header-fields">
+    <div class="header-field-row">
+      <span class="header-field-label">🎯 Goal</span>
+      <input class="header-field-input" id="goalInput" type="text" placeholder="เป้าหมายของคุณ..." oninput="localStorage.setItem('userGoal', this.value)">
+    </div>
+    <div class="header-field-row">
+      <span class="header-field-label">⚠️ Exercise Limitations</span>
+      <input class="header-field-input" id="limitInput" type="text" placeholder="ข้อจำกัด / อาการบาดเจ็บ..." oninput="localStorage.setItem('userLimit', this.value)">
+    </div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 30 วัน</div>
+  <button class="sync-btn" onclick="openSyncModal()">☁️ Sync</button>
+</div>
+
+<!-- SYNC MODAL -->
+<div id="syncModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;overflow-y:auto;padding:24px 16px">
+  <div style="max-width:480px;margin:0 auto;background:#1a1a1a;border:1px solid #333;border-radius:16px;overflow:hidden">
+    <div style="background:#000;padding:16px 20px;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--accent)">☁️ SYNC TO GOOGLE SHEETS</span>
+      <button onclick="closeSyncModal()" style="background:none;border:none;color:#666;font-size:1.4rem;cursor:pointer">✕</button>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;display:block;margin-bottom:6px">Google Apps Script URL</label>
+        <input id="sheetUrl" type="text" placeholder="https://script.google.com/macros/s/..." value="${localStorage.getItem('sheetUrl')||''}"
+          oninput="localStorage.setItem('sheetUrl',this.value)"
+          style="width:100%;background:#0d0d0d;color:#fff;border:1px solid #333;border-radius:8px;padding:10px 12px;font-family:'Sarabun',sans-serif;font-size:0.85rem;outline:none">
+      </div>
+      <div style="background:#0d0d0d;border:1px solid #222;border-radius:8px;padding:14px">
+        <div style="font-size:0.7rem;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:8px">📋 ข้อมูลที่จะส่ง</div>
+        <div id="syncPreview" style="font-size:0.8rem;color:#888;line-height:1.8"></div>
+      </div>
+      <button onclick="doSync()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px;font-family:'Sarabun',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:1px">
+        ส่งข้อมูลไป Google Sheets
+      </button>
+      <div id="syncStatus" style="text-align:center;font-size:0.85rem;min-height:20px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="day-nav" id="dayNav"></div>
+  <div id="dayContent"></div>
+</div>
+
+<div class="toast" id="toast">✅ บันทึกแล้ว!</div>
+
+<script>
+// Default day plan — user can override name & category freely
+const DEFAULT_PLAN = [
+  { name: 'อก + ไตรเซ็ป', cat: 'chest' },
+  { name: 'หลัง + ไบเซ็ป', cat: 'back' },
+  { name: 'ขา', cat: 'legs' },
+  { name: 'ไหล่', cat: 'shoulder' },
+  { name: 'แกนกลาง', cat: 'core' },
+  { name: 'คาร์ดิโอ', cat: 'cardio' },
+  { name: 'พักผ่อน', cat: 'rest' },
+  { name: 'อก + ไตรเซ็ป', cat: 'chest' },
+  { name: 'หลัง + ไบเซ็ป', cat: 'back' },
+  { name: 'ขา', cat: 'legs' },
+  { name: 'ไหล่', cat: 'shoulder' },
+  { name: 'แขน', cat: 'arms' },
+  { name: 'คาร์ดิโอ', cat: 'cardio' },
+  { name: 'พักผ่อน', cat: 'rest' },
+  { name: 'Full Body', cat: 'full' },
+  { name: 'อก + ไตรเซ็ป', cat: 'chest' },
+  { name: 'หลัง + ไบเซ็ป', cat: 'back' },
+  { name: 'ขา', cat: 'legs' },
+  { name: 'แกนกลาง', cat: 'core' },
+  { name: 'ไหล่', cat: 'shoulder' },
+  { name: 'คาร์ดิโอ', cat: 'cardio' },
+  { name: 'พักผ่อน', cat: 'rest' },
+  { name: 'แขน', cat: 'arms' },
+  { name: 'Full Body', cat: 'full' },
+  { name: 'ขา', cat: 'legs' },
+  { name: 'อก + ไหล่', cat: 'chest' },
+  { name: 'หลัง + ไบเซ็ป', cat: 'back' },
+  { name: 'คาร์ดิโอ', cat: 'cardio' },
+  { name: 'แกนกลาง + แขน', cat: 'core' },
+  { name: 'Full Body', cat: 'full' },
+];
+
+// Full exercise library for search — user's typed names take priority
+const EXERCISE_DB = [
+  // CHEST
+  'Barbell Bench Press','Incline Barbell Bench Press','Decline Barbell Bench Press','Close Grip Bench Press',
+  'Dumbbell Bench Press','Incline Dumbbell Press','Decline Dumbbell Press','Dumbbell Fly','Incline Dumbbell Fly','Decline Dumbbell Fly','Dumbbell Pullover',
+  'Pec Deck Machine','Cable Crossover','Low Cable Fly','High Cable Fly','Cable Fly Mid','Smith Machine Bench Press','Chest Press Machine','Incline Chest Press Machine',
+  'Push Up','Wide Push Up','Diamond Push Up','Decline Push Up','Incline Push Up','Chest Dip','Plyometric Push Up',
+  // BACK
+  'Barbell Deadlift','Conventional Deadlift','Sumo Deadlift','Barbell Bent Over Row','Pendlay Row','T-Bar Row','Rack Pull','Good Morning',
+  'Dumbbell Row One Arm','Dumbbell Bent Over Row','Dumbbell Shrug','Meadows Row','Dumbbell Deadlift',
+  'Lat Pulldown Wide','Lat Pulldown Close','Seated Cable Row','Face Pull','Straight Arm Pulldown','Chest Supported Row Machine','Cable Row Wide','Cable Row Close','Assisted Pull Up Machine',
+  'Pull Up','Chin Up','Neutral Grip Pull Up','Inverted Row','Band Pull Apart',
+  // LEGS
+  'Barbell Squat','Front Squat','Low Bar Squat','Romanian Deadlift','Barbell Hip Thrust','Barbell Lunge','Barbell Step Up',
+  'Dumbbell Squat','Dumbbell Romanian Deadlift','Dumbbell Hip Thrust','Dumbbell Lunge','Dumbbell Walking Lunge','Bulgarian Split Squat','Dumbbell Step Up','Dumbbell Calf Raise','Dumbbell Sumo Squat','Goblet Squat',
+  'Leg Press','Leg Extension','Leg Curl Lying','Leg Curl Seated','Hack Squat','Smith Machine Squat','Smith Machine Hip Thrust','Standing Calf Raise Machine','Seated Calf Raise Machine','Hip Abduction Machine','Hip Adduction Machine',
+  'Bodyweight Squat','Jump Squat','Pistol Squat','Glute Bridge','Single Leg Glute Bridge','Walking Lunge','Lateral Lunge','Reverse Lunge','Box Jump','Step Up',
+  // SHOULDER
+  'Barbell Overhead Press','Behind Neck Press','Push Press','Barbell Upright Row','Barbell Front Raise',
+  'Dumbbell Overhead Press','Arnold Press','Dumbbell Lateral Raise','Dumbbell Front Raise','Dumbbell Rear Delt Fly','Dumbbell Upright Row','Dumbbell Shrug','Incline Dumbbell Rear Delt Fly','Seated Dumbbell Press',
+  'Machine Overhead Press','Smith Machine Press','Cable Lateral Raise','Cable Front Raise','Cable Rear Delt Fly','Pec Deck Rear Delt','Lateral Raise Machine',
+  // ARMS — BICEP
+  'Barbell Curl','EZ Bar Curl','Preacher Curl','Drag Curl',
+  'Dumbbell Curl','Hammer Curl','Incline Dumbbell Curl','Concentration Curl','Zottman Curl','Cross Body Hammer Curl','Spider Curl',
+  'Cable Curl','High Cable Curl','Preacher Curl Machine','Reverse Curl Cable','Cable Hammer Curl',
+  // ARMS — TRICEP
+  'Skullcrusher','Overhead Tricep Extension','Tricep Kickback','Tricep Dips','Bench Dip',
+  'Tricep Pushdown Rope','Tricep Pushdown Bar','Overhead Cable Extension','Cable Kickback','Tricep Press Machine',
+  'Wrist Curl','Reverse Wrist Curl','Dead Hang',
+  // CORE
+  'Cable Crunch','Weighted Crunch','Ab Wheel Rollout','Pallof Press','Landmine Rotation','Weighted Sit Up','Cable Woodchop','Dumbbell Side Bend',
+  'Ab Crunch Machine','Decline Sit Up',
+  'Plank','Side Plank','Plank Up Down','Crunch','Bicycle Crunch','Leg Raise','Hanging Leg Raise','Hanging Knee Raise','V Up','Dragon Flag','Russian Twist','Mountain Climber','Flutter Kick','Hollow Body Hold','Dead Bug','Bird Dog',
+  // CARDIO
+  'วิ่ง Treadmill','วิ่งกลางแจ้ง','วิ่ง Interval','Stationary Bike','Spin Bike','Rowing Machine','Elliptical','Stairmaster','Ski Erg',
+  'HIIT','Tabata','Jump Rope','Burpee','High Knees','Battle Rope','Sled Push','Sled Pull','Farmer Walk',
+  // FUNCTIONAL — KETTLEBELL
+  'Kettlebell Swing','Kettlebell Clean','Kettlebell Snatch','Kettlebell Turkish Get Up','Kettlebell Goblet Squat','Kettlebell Windmill','Kettlebell Around The World','Kettlebell Deadlift','Kettlebell Row','Kettlebell Press','Kettlebell Lunge','Kettlebell Figure 8',
+  // FUNCTIONAL — TRX
+  'TRX Row','TRX Push Up','TRX Squat','TRX Lunge','TRX Plank','TRX Pike','TRX Mountain Climber','TRX Chest Fly','TRX Bicep Curl','TRX Tricep Extension','TRX Hip Press','TRX Hamstring Curl','TRX Atomic Push Up','TRX Oblique Crunch',
+  // FUNCTIONAL — BATTLE ROPE
+  'Battle Rope Waves','Battle Rope Alternating Waves','Battle Rope Slam','Battle Rope Circle','Battle Rope Jump Slam','Battle Rope Side Slam','Battle Rope Squat Wave',
+  // FUNCTIONAL — BOX
+  'Box Jump','Box Step Up','Box Lateral Jump','Depth Jump','Broad Jump','Hurdle Jump','Single Leg Box Jump','Box Push Up',
+  // FUNCTIONAL — SLED / CARRY
+  'Sled Push','Sled Pull','Sled Drag Backward','Yoke Walk','Sandbag Carry',
+  // FUNCTIONAL — BAND
+  'Band Pull Apart','Band Face Pull','Band Squat','Band Hip Thrust','Band Lateral Walk','Band Monster Walk','Band Press','Band Row','Band Curl','Band Tricep Pushdown','Band Deadlift',
+  // FUNCTIONAL — MED BALL
+  'Med Ball Slam','Med Ball Rotational Throw','Med Ball Wall Ball','Med Ball Chest Pass','Med Ball Russian Twist','Med Ball Squat Throw','Med Ball Overhead Slam',
+  // FUNCTIONAL — BODYWEIGHT
+  'Bear Crawl','Crab Walk','Inchworm','Lateral Shuffle','Sprawl','Muscle Up','Rope Climb','Man Maker',
+  // OLYMPIC
+  'Power Clean','Hang Clean','Power Snatch','Hang Snatch','Clean and Jerk','Push Jerk','Split Jerk','Thruster',
+];
+
+// No preset exercises — user types freely, search returns nothing until typed
+const EXERCISES = {
+  chest: [], back: [], legs: [], shoulder: [], core: [],
+  cardio: [], arms: [], full: [], rest: [], functional: [],
+};
+
+const CAT_LABELS = {
+  chest:'อก', back:'หลัง', legs:'ขา', shoulder:'ไหล่',
+  core:'แกนกลาง', cardio:'คาร์ดิโอ', rest:'พัก', arms:'แขน', full:'Full Body',
+  functional:'Functional'
+};
+
+const CAT_COLORS = {
+  chest:'#ff4444', back:'#4488ff', legs:'#ff8800', shoulder:'#aa44ff',
+  core:'#00ccaa', cardio:'#e8ff00', rest:'#444', arms:'#ff44aa', full:'#ff6600',
+  functional:'#00ddff'
+};
+
+const CAT_TEXT = {
+  chest:'#fff', back:'#fff', legs:'#fff', shoulder:'#fff',
+  core:'#000', cardio:'#000', rest:'#999', arms:'#fff', full:'#fff',
+  functional:'#000'
+};
+
+let currentDay = 1;
+let data = JSON.parse(localStorage.getItem('workout30') || '{}');
+
+function saveData() {
+  localStorage.setItem('workout30', JSON.stringify(data));
+  updateProgress();
+}
+
+function getDay(d) {
+  if (!data[d]) {
+    const plan = DEFAULT_PLAN[d - 1];
+    data[d] = {
+      muscles: plan.cat === 'rest' ? ['rest'] : [plan.cat],
+      exercises: Array(8).fill(null).map(() => ({
+        name: '',
+        sets: Array(4).fill(null).map(() => ({ reps: '', weight: '', done: false }))
+      })),
+      checkin: { readiness: 5, ate: null, ateHours: '', illness: '', sleep: '' },
+      notes: '',
+      completed: false
+    };
+  }
+  if (!data[d].muscles) {
+    data[d].muscles = data[d].category ? [data[d].category] : ['chest'];
+    delete data[d].category;
+    delete data[d].title;
+  }
+  if (!data[d].checkin) {
+    data[d].checkin = { readiness: 5, ate: null, ateHours: '', illness: '', sleep: '' };
+  }
+  while (data[d].exercises.length < 8) {
+    data[d].exercises.push({ name: '', sets: Array(4).fill(null).map(() => ({ reps: '', weight: '', done: false })) });
+  }
+  return data[d];
+}
+
+function updateProgress() {
+  const done = Object.values(data).filter(d => d.completed).length;
+  const pct = (done / 30) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} / 30 วัน`;
+
+  document.querySelectorAll('.day-btn').forEach((btn, i) => {
+    const d = i + 1;
+    btn.classList.toggle('done', !!(data[d] && data[d].completed));
+    btn.classList.toggle('active', d === currentDay);
+  });
+}
+
+function renderDayNav() {
+  const nav = document.getElementById('dayNav');
+  nav.innerHTML = '';
+  for (let i = 1; i <= 30; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'day-btn';
+    btn.textContent = i;
+    btn.onclick = () => { currentDay = i; renderDay(); updateProgress(); };
+    nav.appendChild(btn);
+  }
+}
+
+function getMuscleLabel(muscles) {
+  if (!muscles || muscles.length === 0) return 'เลือกกล้ามเนื้อ';
+  if (muscles.includes('rest')) return 'พักผ่อน 😴';
+  return muscles.map(m => CAT_LABELS[m]).join(' + ');
+}
+
+function getExercisePool(muscles) {
+  const pool = [];
+  muscles.forEach(m => {
+    (EXERCISES[m] || []).forEach(e => { if (!pool.includes(e)) pool.push(e); });
+  });
+  return pool;
+}
+
+function renderDay() {
+  const dayData = getDay(currentDay);
+  const content = document.getElementById('dayContent');
+  const muscles = dayData.muscles || ['chest'];
+  const isRest = muscles.includes('rest');
+  const pool = isRest ? [] : getExercisePool(muscles);
+
+  const pillsHTML = Object.keys(CAT_LABELS).map(k => {
+    const active = muscles.includes(k);
+    return `<span class="muscle-pill ${active ? 'active' : ''}"
+      style="background:${CAT_COLORS[k]};color:${CAT_TEXT[k]}"
+      onclick="toggleMuscle('${k}')">${CAT_LABELS[k]}</span>`;
+  }).join('');
+
+  const setsBlock = isRest ? `
+    <div class="rest-card">
+      <div class="rest-icon">😴</div>
+      <h3>วันนี้พักผ่อน</h3>
+      <p style="margin-top:8px;font-size:0.85rem;">ให้กล้ามเนื้อฟื้นตัว ดื่มน้ำให้เพียงพอ</p>
+    </div>` : dayData.exercises.map((ex, ei) => {
+    const safeVal = (ex.name || '').replace(/"/g, '&quot;');
+    return `
+      <div class="select-row" style="flex-direction:column;gap:8px">
+        <label style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700">ท่าที่ ${ei + 1}</label>
+        <div class="ex-search-wrap" id="wrap-${ei}">
+          <span class="ex-search-icon">🔍</span>
+          <input class="ex-search-input" type="text" value="${safeVal}" placeholder="พิมพ์หรือค้นหาชื่อท่า..."
+            oninput="searchExercise(${ei}, this.value)"
+            onblur="hideDropdown(${ei})"
+            onfocus="searchExercise(${ei}, this.value)"
+            autocomplete="off">
+          <div class="ex-dropdown" id="drop-${ei}" style="display:none"></div>
+        </div>
+      </div>
+      <div class="sets-table">
+        <div class="sets-header">
+          <span>เซ็ต</span><span>น้ำหนัก (kg)</span><span>จำนวน (ครั้ง)</span><span>เสร็จ</span>
+        </div>
+        ${ex.sets.map((set, si) => `
+          <div class="set-row ${set.done ? 'completed' : ''}" id="setrow-${ei}-${si}">
+            <div class="set-label">SET ${si + 1}</div>
+            <input type="number" min="0" step="0.5" placeholder="0" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)">
+            <input type="number" min="0" placeholder="0" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)">
+            <button class="check-btn ${set.done ? 'done' : ''}" onclick="toggleSet(${ei},${si})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="${set.done ? '#000' : '#555'}" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+        `).join('')}
+      </div>`;
+  }).join('');
+
+  const ci = dayData.checkin;
+  const checkinHTML = `
+    <div class="checkin-card">
+      <div class="checkin-header">📋 CHECK-IN วันนี้</div>
+      <div class="checkin-body">
+
+        <div class="checkin-item">
+          <label>⚡ ความพร้อมวันนี้ (1–10)</label>
+          <div class="readiness-row">
+            <input type="range" min="1" max="10" value="${ci.readiness}"
+              oninput="updateCheckin('readiness', +this.value); document.getElementById('rval').textContent=this.value">
+            <div class="readiness-val" id="rval">${ci.readiness}</div>
+          </div>
+        </div>
+
+        <div class="checkin-item">
+          <label>🍚 กินข้าวมายัง</label>
+          <div class="chip-group">
+            <span class="chip ${ci.ate === 'yes' ? 'selected' : ''}" onclick="updateCheckin('ate','yes');renderDay()">กินแล้ว</span>
+            <span class="chip ${ci.ate === 'no' ? 'selected' : ''}" onclick="updateCheckin('ate','no');renderDay()">ยังไม่กิน</span>
+          </div>
+          ${ci.ate === 'yes' ? `
+          <div class="hours-row" style="margin-top:10px">
+            <span>กินก่อนออกกำลังกาย</span>
+            <input type="number" min="0" max="12" step="0.5" value="${ci.ateHours}" placeholder="0"
+              style="width:70px;text-align:center" onchange="updateCheckin('ateHours', this.value)">
+            <span>ชั่วโมง</span>
+          </div>` : ''}
+        </div>
+
+        <div class="checkin-item">
+          <label>😴 นอนมากี่ชั่วโมง</label>
+          <div class="hours-row">
+            <input type="number" min="0" max="24" step="0.5" value="${ci.sleep}" placeholder="0"
+              style="width:70px;text-align:center" onchange="updateCheckin('sleep', this.value)">
+            <span>ชั่วโมง</span>
+          </div>
+        </div>
+
+        <div class="checkin-item">
+          <label>🤒 มีอาการป่วยอะไรไหม</label>
+          <div class="chip-group" style="margin-bottom:8px">
+            <span class="chip ${ci.illness === 'ไม่มี' ? 'selected' : ''}" onclick="updateCheckin('illness','ไม่มี');renderDay()">ไม่มี ✅</span>
+            <span class="chip ${ci.illness !== '' && ci.illness !== 'ไม่มี' ? 'selected' : ''}" onclick="selectIllness()">มี / ระบุ</span>
+          </div>
+          ${ci.illness !== '' && ci.illness !== 'ไม่มี' ? `
+          <textarea class="illness-input" placeholder="ระบุอาการ เช่น ปวดหัว ปวดหลัง..."
+            onchange="updateCheckin('illness', this.value)">${ci.illness}</textarea>` : ''}
+        </div>
+
+      </div>
+    </div>`;
+
+  content.innerHTML = `
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-title">
+          <span class="day-num">DAY ${currentDay}</span>
+          <span class="day-name">${getMuscleLabel(muscles)}</span>
+        </div>
+      </div>
+      <div class="muscle-picker">${pillsHTML}</div>
+    </div>
+
+    ${checkinHTML}
+
+    <div class="day-card">
+      ${setsBlock}
+      <div class="notes-row" style="padding-top:16px">
+        <label>📝 โน้ต / ความรู้สึก</label>
+        <textarea placeholder="บันทึกความก้าวหน้า ความรู้สึก..." onchange="updateNotes(this.value)">${dayData.notes}</textarea>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="markComplete()">
+          ${dayData.completed ? '✅ เสร็จแล้ว!' : '🏁 บันทึกวันนี้'}
+        </button>
+        <button class="btn btn-outline" onclick="resetDay()">รีเซ็ต</button>
+      </div>
+    </div>`;
+
+  updateProgress();
+}
+
+
+function toggleMuscle(cat) {
+  const dayData = getDay(currentDay);
+  const muscles = dayData.muscles;
+
+  if (cat === 'rest') {
+    // toggle rest exclusively
+    dayData.muscles = muscles.includes('rest') ? ['chest'] : ['rest'];
+  } else {
+    // remove rest if selecting actual muscle
+    const filtered = muscles.filter(m => m !== 'rest');
+    if (filtered.includes(cat)) {
+      // deselect — must keep at least 1
+      const next = filtered.filter(m => m !== cat);
+      dayData.muscles = next.length ? next : filtered;
+    } else {
+      dayData.muscles = [...filtered, cat];
+    }
+  }
+  saveData();
+  renderDay();
+}
+
+function updateSet(ei, si, field, val) {
+  const dayData = getDay(currentDay);
+  dayData.exercises[ei].sets[si][field] = val;
+  saveData();
+}
+
+function toggleSet(ei, si) {
+  const dayData = getDay(currentDay);
+  dayData.exercises[ei].sets[si].done = !dayData.exercises[ei].sets[si].done;
+  saveData();
+  const row = document.getElementById(`setrow-${ei}-${si}`);
+  const set = dayData.exercises[ei].sets[si];
+  row.classList.toggle('completed', set.done);
+  const btn = row.querySelector('.check-btn');
+  btn.classList.toggle('done', set.done);
+  btn.querySelector('svg').setAttribute('stroke', set.done ? '#000' : '#555');
+}
+
+
+// Exercise search — searches EXERCISE_DB + names typed by user
+function getAllUsedExercises() {
+  const set = new Set(EXERCISE_DB);
+  Object.values(data).forEach(d => {
+    if (d.exercises) d.exercises.forEach(ex => { if (ex.name && ex.name.trim()) set.add(ex.name.trim()); });
+  });
+  return [...set].sort();
+}
+
+function searchExercise(ei, query) {
+  const dayData = getDay(currentDay);
+  dayData.exercises[ei].name = query;
+  saveData();
+
+  const drop = document.getElementById('drop-' + ei);
+  if (!drop) return;
+  const q = query.trim().toLowerCase();
+  if (!q) { drop.style.display = 'none'; return; }
+
+  const all = getAllUsedExercises();
+  // prioritize starts-with, then contains
+  const startsWith = all.filter(e => e.toLowerCase().startsWith(q));
+  const contains = all.filter(e => !e.toLowerCase().startsWith(q) && e.toLowerCase().includes(q));
+  const matches = [...startsWith, ...contains].slice(0, 12);
+
+  if (!matches.length) { drop.style.display = 'none'; return; }
+
+  drop.innerHTML = matches.map(e => {
+    const hi = e.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+    return `<div class="ex-dropdown-item" onmousedown="selectExercise(${ei},'${e.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">
+      ${hi}
+    </div>`;
+  }).join('');
+  drop.style.display = 'block';
+}
+
+function selectExercise(ei, name) {
+  const dayData = getDay(currentDay);
+  dayData.exercises[ei].name = name;
+  saveData();
+  const input = document.querySelector(`#wrap-${ei} .ex-search-input`);
+  if (input) input.value = name;
+  const drop = document.getElementById('drop-' + ei);
+  if (drop) drop.style.display = 'none';
+}
+
+function hideDropdown(ei) {
+  setTimeout(() => {
+    const drop = document.getElementById('drop-' + ei);
+    if (drop) drop.style.display = 'none';
+  }, 150);
+}
+
+// Checkin
+function updateCheckin(field, val) {
+  const dayData = getDay(currentDay);
+  dayData.checkin[field] = val;
+  saveData();
+}
+
+function selectIllness() {
+  const dayData = getDay(currentDay);
+  dayData.checkin.illness = dayData.checkin.illness === 'ไม่มี' || dayData.checkin.illness === '' ? ' ' : dayData.checkin.illness;
+  saveData();
+  renderDay();
+}
+
+
+function updateNotes(val) {
+  const dayData = getDay(currentDay);
+  dayData.notes = val;
+  saveData();
+}
+
+function markComplete() {
+  const dayData = getDay(currentDay);
+  dayData.completed = !dayData.completed;
+  saveData();
+  renderDay();
+  showToast(dayData.completed ? '🎉 วันที่ ' + currentDay + ' เสร็จแล้ว!' : 'ยกเลิกการบันทึก');
+}
+
+
+function resetDay() {
+  if (!confirm('รีเซ็ตข้อมูลวันนี้?')) return;
+  delete data[currentDay];
+  saveData();
+  renderDay();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function saveMember(val) {
+  localStorage.setItem('memberName', val);
+}
+
+function openSyncModal() {
+  const member = localStorage.getItem('memberName') || 'ไม่ระบุ';
+  const goal = localStorage.getItem('userGoal') || '-';
+  const limit = localStorage.getItem('userLimit') || '-';
+  const doneCount = Object.values(data).filter(d => d.completed).length;
+  const preview = document.getElementById('syncPreview');
+  if (preview) {
+    preview.innerHTML = `
+      👤 Member: <b style="color:#fff">${member}</b><br>
+      🎯 Goal: <b style="color:#fff">${goal}</b><br>
+      ⚠️ Limitations: <b style="color:#fff">${limit}</b><br>
+      📅 วันที่เสร็จ: <b style="color:#fff">${doneCount} / 30 วัน</b><br>
+      📦 ข้อมูลทั้งหมด ${Object.keys(data).length} วัน
+    `;
+  }
+  document.getElementById('syncModal').style.display = 'block';
+}
+
+function closeSyncModal() {
+  document.getElementById('syncModal').style.display = 'none';
+  document.getElementById('syncStatus').textContent = '';
+}
+
+async function doSync() {
+  const url = (localStorage.getItem('sheetUrl') || '').trim();
+  if (!url) {
+    document.getElementById('syncStatus').innerHTML = '<span style="color:#ff4444">❌ กรุณาใส่ URL ของ Apps Script ก่อน</span>';
+    return;
+  }
+
+  const status = document.getElementById('syncStatus');
+  status.innerHTML = '<span style="color:#aaa">⏳ กำลังส่งข้อมูล...</span>';
+
+  const payload = {
+    member: localStorage.getItem('memberName') || '',
+    goal: localStorage.getItem('userGoal') || '',
+    limitations: localStorage.getItem('userLimit') || '',
+    syncedAt: new Date().toISOString(),
+    days: Object.keys(data).map(d => {
+      const day = data[d];
+      const ci = day.checkin || {};
+      return {
+        day: parseInt(d),
+        muscles: (day.muscles || []).join(', '),
+        completed: day.completed ? 'yes' : 'no',
+        readiness: ci.readiness || '',
+        ate: ci.ate || '',
+        ateHours: ci.ateHours || '',
+        sleep: ci.sleep || '',
+        illness: ci.illness || '',
+        exercises: (day.exercises || []).map(ex => ({
+          name: ex.name || '',
+          sets: (ex.sets || []).map(s => `${s.weight||0}kg×${s.reps||0}`).join(' | ')
+        })),
+        notes: day.notes || ''
+      };
+    })
+  };
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const text = await res.text();
+    if (text.includes('OK') || res.ok) {
+      status.innerHTML = '<span style="color:var(--green)">✅ ส่งข้อมูลสำเร็จ!</span>';
+    } else {
+      status.innerHTML = `<span style="color:#ff4444">❌ ผิดพลาด: ${text.slice(0,80)}</span>`;
+    }
+  } catch (e) {
+    status.innerHTML = `<span style="color:#ff4444">❌ ไม่สามารถเชื่อมต่อได้: ${e.message}</span>`;
+  }
+}
+
+// INIT
+renderDayNav();
+renderDay();
+// Restore member name, goal, limitations
+const savedMember = localStorage.getItem('memberName');
+if (savedMember) { const inp = document.getElementById('memberInput'); if (inp) inp.value = savedMember; }
+const savedGoal = localStorage.getItem('userGoal');
+if (savedGoal) { const inp = document.getElementById('goalInput'); if (inp) inp.value = savedGoal; }
+const savedLimit = localStorage.getItem('userLimit');
+if (savedLimit) { const inp = document.getElementById('limitInput'); if (inp) inp.value = savedLimit; }
+</script>
+</body>
+</html>
