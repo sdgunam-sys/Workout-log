@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนออกกำลังกาย 30 วัน</title>
+<title>Captain Workout Log</title>
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Captain Log">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -715,6 +723,24 @@
   .ex-dropdown-item:hover { background: #2e2e2e; }
   .ex-dropdown-item mark { background: transparent; color: var(--accent); font-weight: 700; }
 
+
+  /* CLIENT SIDEBAR (left) */
+  :root { --hdr: 190px; --side: 92px; }
+  .layout { display:flex; align-items:flex-start; }
+  .main { flex:1; min-width:0; }
+  .client-side { position:sticky; top:var(--hdr); align-self:flex-start; z-index:5; width:var(--side); flex:0 0 var(--side); height:calc(100vh - var(--hdr)); height:calc(100dvh - var(--hdr)); background:#0a0a0a; border-right:1px solid var(--border); display:flex; flex-direction:column; transition:width .2s, flex-basis .2s; overflow:hidden; }
+  .client-side-top { display:flex; align-items:center; justify-content:space-between; padding:8px 6px 6px 8px; border-bottom:1px solid var(--border); }
+  .client-side-title { font-size:0.65rem; color:var(--muted); letter-spacing:1px; font-weight:700; white-space:nowrap; }
+  .side-toggle { background:transparent; border:1px solid var(--border); color:#aaa; border-radius:6px; width:26px; height:26px; font-size:0.8rem; cursor:pointer; padding:0; }
+  .client-tabs { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:8px 6px 20px; display:flex; flex-direction:column; gap:6px; scrollbar-width:none; position:relative; }
+  .client-tabs::-webkit-scrollbar { display:none; }
+  .client-tab { width:100%; text-align:left; padding:9px 8px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:#aaa; font-family:'Sarabun',sans-serif; font-weight:700; font-size:0.78rem; line-height:1.25; cursor:pointer; word-break:break-word; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; flex:0 0 auto; }
+  .client-tab.active { background:var(--accent); color:#000; border-color:var(--accent); }
+  .client-add { background:transparent; border-style:dashed; border-color:#555; color:var(--accent); text-align:center; }
+  .client-side.collapsed { width:34px; flex-basis:34px; }
+  .client-side.collapsed .client-side-title, .client-side.collapsed .client-tabs { display:none; }
+  .client-side.collapsed .client-side-top { justify-content:center; padding:8px 0; border-bottom:none; }
+  .client-del { margin-left:auto; background:transparent; border:1px solid #442222; color:#ff6666; border-radius:8px; padding:3px 10px; font-family:'Sarabun',sans-serif; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -724,19 +750,30 @@
   <div class="header-logo">💪 WORKOUT LOG</div>
   <div class="header-member">
     <span class="header-member-label">Member</span>
-    <input class="member-input" id="memberInput" type="text" placeholder="พิมพ์ชื่อของคุณ..." oninput="saveMember(this.value)">
+    <input class="member-input" id="memberInput" type="text" placeholder="พิมพ์ชื่อลูกค้า..." oninput="saveMember(this.value)">
+    <button class="client-del" onclick="deleteClient()">🗑 ลบลูกค้า</button>
   </div>
   <div class="header-fields">
     <div class="header-field-row">
       <span class="header-field-label">🎯 Goal</span>
-      <input class="header-field-input" id="goalInput" type="text" placeholder="เป้าหมายของคุณ..." oninput="localStorage.setItem('userGoal', this.value)">
+      <input class="header-field-input" id="goalInput" type="text" placeholder="เป้าหมายของคุณ..." oninput="saveGoal(this.value)">
     </div>
     <div class="header-field-row">
       <span class="header-field-label">⚠️ Exercise Limitations</span>
-      <input class="header-field-input" id="limitInput" type="text" placeholder="ข้อจำกัด / อาการบาดเจ็บ..." oninput="localStorage.setItem('userLimit', this.value)">
+      <input class="header-field-input" id="limitInput" type="text" placeholder="ข้อจำกัด / อาการบาดเจ็บ..." oninput="saveLimit(this.value)">
     </div>
   </div>
 </header>
+
+<div class="layout">
+<aside class="client-side" id="clientSide">
+  <div class="client-side-top">
+    <span class="client-side-title" id="clientBarTitle">👥 ลูกค้า</span>
+    <button class="side-toggle" id="sideToggle" onclick="toggleSide()" title="ย่อ/ขยาย">◀</button>
+  </div>
+  <div class="client-tabs" id="clientTabs"></div>
+</aside>
+<div class="main">
 
 <div class="progress-wrap">
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -754,8 +791,8 @@
     <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
       <div>
         <label style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;display:block;margin-bottom:6px">Google Apps Script URL</label>
-        <input id="sheetUrl" type="text" placeholder="https://script.google.com/macros/s/..." value="${localStorage.getItem('sheetUrl')||''}"
-          oninput="localStorage.setItem('sheetUrl',this.value)"
+        <input id="sheetUrl" type="text" placeholder="https://script.google.com/macros/s/..." 
+          oninput="LS.set('sheetUrl',this.value)"
           style="width:100%;background:#0d0d0d;color:#fff;border:1px solid #333;border-radius:8px;padding:10px 12px;font-family:'Sarabun',sans-serif;font-size:0.85rem;outline:none">
       </div>
       <div style="background:#0d0d0d;border:1px solid #222;border-radius:8px;padding:14px">
@@ -763,7 +800,10 @@
         <div id="syncPreview" style="font-size:0.8rem;color:#888;line-height:1.8"></div>
       </div>
       <button onclick="doSync()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px;font-family:'Sarabun',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:1px">
-        ส่งข้อมูลไป Google Sheets
+        ส่งเฉพาะลูกค้าที่เปิดอยู่
+      </button>
+      <button onclick="doSync(true)" style="background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:12px;font-family:'Sarabun',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:1px">
+        ส่งลูกค้าทุกคน
       </button>
       <div id="syncStatus" style="text-align:center;font-size:0.85rem;min-height:20px"></div>
     </div>
@@ -773,6 +813,22 @@
 <div class="container">
   <div class="day-nav" id="dayNav"></div>
   <div id="dayContent"></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- DIALOG -->
+<div id="dlg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;padding:20px">
+  <div style="width:100%;max-width:360px;background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px">
+    <div id="dlgTitle" style="font-family:'Bebas Neue','Sarabun',sans-serif;font-size:1.4rem;letter-spacing:1.5px;color:var(--accent)"></div>
+    <div id="dlgMsg" style="font-size:0.9rem;color:#bbb;line-height:1.5;white-space:pre-line"></div>
+    <input id="dlgInput" type="text" placeholder="พิมพ์ชื่อ..." style="display:none;width:100%;background:#0d0d0d;color:#fff;border:1px solid #333;border-radius:8px;padding:12px;font-family:'Sarabun',sans-serif;font-size:1rem;text-align:left;outline:none">
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button id="dlgCancel" style="flex:1;background:transparent;color:#aaa;border:1px solid #444;border-radius:8px;padding:12px;font-family:'Sarabun',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer">ยกเลิก</button>
+      <button id="dlgOk" style="flex:1;background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px;font-family:'Sarabun',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer">ตกลง</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast">✅ บันทึกแล้ว!</div>
@@ -892,12 +948,70 @@ const CAT_TEXT = {
   functional:'#000'
 };
 
+// ที่เก็บข้อมูลแบบปลอดภัย: ถ้าเบราว์เซอร์/พรีวิวบล็อก localStorage จะเก็บในหน่วยความจำแทน (ไม่ให้แอปพัง)
+const _memStore = {};
+const LS = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return k in _memStore ? _memStore[k] : null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { _memStore[k] = String(v); } }
+};
+
+// กล่องถามในหน้าเว็บ (แทน prompt/confirm ที่บางพรีวิวบล็อก)
+function askDialog({ title, message, input, ok, danger }) {
+  return new Promise(resolve => {
+    const box = document.getElementById('dlg');
+    const inp = document.getElementById('dlgInput');
+    const okBtn = document.getElementById('dlgOk');
+    document.getElementById('dlgTitle').textContent = title || '';
+    document.getElementById('dlgMsg').textContent = message || '';
+    inp.style.display = input ? 'block' : 'none';
+    inp.value = '';
+    okBtn.textContent = ok || 'ตกลง';
+    okBtn.style.background = danger ? '#ff4444' : 'var(--accent)';
+    okBtn.style.color = danger ? '#fff' : '#000';
+    box.style.display = 'flex';
+    if (input) setTimeout(() => inp.focus(), 50);
+    const done = v => { box.style.display = 'none'; okBtn.onclick = cancelBtn.onclick = inp.onkeydown = null; resolve(v); };
+    const cancelBtn = document.getElementById('dlgCancel');
+    okBtn.onclick = () => done(input ? inp.value : true);
+    cancelBtn.onclick = () => done(null);
+    inp.onkeydown = e => { if (e.key === 'Enter') done(inp.value); };
+  });
+}
+
 let currentDay = 1;
-let data = JSON.parse(localStorage.getItem('workout30') || '{}');
+
+function newClient(name) {
+  return { id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: name || '', goal: '', limit: '', data: {} };
+}
+
+function loadStore() {
+  try {
+    const st = JSON.parse(LS.get('captainStore'));
+    if (st && Array.isArray(st.clients) && st.clients.length) return st;
+  } catch (e) {}
+  // ย้ายข้อมูลเดิม (แบบคนเดียว) มาเป็นลูกค้าคนแรก
+  const c = newClient(LS.get('memberName') || '');
+  c.goal = LS.get('userGoal') || '';
+  c.limit = LS.get('userLimit') || '';
+  try { c.data = JSON.parse(LS.get('workout30') || '{}') || {}; } catch (e) {}
+  return { clients: [c], active: c.id };
+}
+
+let store = loadStore();
+function activeClient() { return store.clients.find(c => c.id === store.active) || store.clients[0]; }
+store.active = activeClient().id;
+let data = activeClient().data;
+
+function saveStore() { LS.set('captainStore', JSON.stringify(store)); }
 
 function saveData() {
-  localStorage.setItem('workout30', JSON.stringify(data));
+  activeClient().data = data;
+  saveStore();
   updateProgress();
+}
+
+function esc(t) {
+  return String(t == null ? '' : t).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 }
 
 function getDay(d) {
@@ -1226,8 +1340,9 @@ function markComplete() {
 }
 
 
-function resetDay() {
-  if (!confirm('รีเซ็ตข้อมูลวันนี้?')) return;
+async function resetDay() {
+  const ok = await askDialog({ title: 'รีเซ็ตวันนี้', message: `ล้างข้อมูล Day ${currentDay} ทั้งหมด?`, ok: 'รีเซ็ต', danger: true });
+  if (!ok) return;
   delete data[currentDay];
   saveData();
   renderDay();
@@ -1240,23 +1355,110 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function saveMember(val) {
-  localStorage.setItem('memberName', val);
+// ---------- CLIENTS ----------
+function renderClientTabs() {
+  const box = document.getElementById('clientTabs');
+  box.innerHTML = '';
+  const add = document.createElement('button');
+  add.className = 'client-tab client-add';
+  add.textContent = '+ เพิ่ม';
+  add.onclick = addClient;
+  box.appendChild(add);
+  store.clients.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'client-tab' + (c.id === store.active ? ' active' : '');
+    b.textContent = (c.name || '').trim() || 'ลูกค้าใหม่';
+    b.onclick = () => switchClient(c.id);
+    box.appendChild(b);
+  });
+  document.getElementById('clientBarTitle').textContent = `👥 ${store.clients.length} คน`;
+  const act = box.querySelector('.client-tab.active');
+  if (act) box.scrollTop = act.offsetTop - box.clientHeight / 2 + act.clientHeight / 2;
+}
+
+function toggleSide() {
+  const side = document.getElementById('clientSide');
+  const collapsed = side.classList.toggle('collapsed');
+  document.getElementById('sideToggle').textContent = collapsed ? '👥' : '◀';
+  try { LS.set('sideCollapsed', collapsed ? '1' : ''); } catch (e) {}
+}
+
+function setHeaderVar() {
+  const h = document.querySelector('header');
+  if (h) document.documentElement.style.setProperty('--hdr', h.offsetHeight + 'px');
+}
+
+function loadClientFields() {
+  const c = activeClient();
+  document.getElementById('memberInput').value = c.name || '';
+  document.getElementById('goalInput').value = c.goal || '';
+  document.getElementById('limitInput').value = c.limit || '';
+}
+
+function switchClient(id) {
+  store.active = id;
+  saveStore();
+  data = activeClient().data;
+  currentDay = 1;
+  renderClientTabs();
+  loadClientFields();
+  renderDay();
+  updateProgress();
+  window.scrollTo({ top: 0 });
+}
+
+async function addClient() {
+  const name = await askDialog({ title: 'เพิ่มลูกค้า', message: 'พิมพ์ชื่อลูกค้าใหม่', input: true, ok: 'เพิ่ม' });
+  if (name === null) return;
+  const c = newClient(String(name).trim());
+  store.clients.push(c);
+  switchClient(c.id);
+  showToast('➕ เพิ่มลูกค้าแล้ว');
+}
+
+async function deleteClient() {
+  const c = activeClient();
+  const label = (c.name || '').trim() || 'ลูกค้าคนนี้';
+  const ok = await askDialog({ title: 'ลบลูกค้า', message: `ลบ "${label}" และข้อมูลทั้งหมดของคนนี้?\nลบแล้วกู้คืนไม่ได้`, ok: 'ลบ', danger: true });
+  if (!ok) return;
+  store.clients = store.clients.filter(x => x.id !== c.id);
+  if (!store.clients.length) store.clients.push(newClient(''));
+  switchClient(store.clients[0].id);
+  showToast('🗑 ลบลูกค้าแล้ว');
+}
+
+function saveMember(val) { activeClient().name = val; saveStore(); renderClientTabs(); }
+function saveGoal(val) { activeClient().goal = val; saveStore(); }
+function saveLimit(val) { activeClient().limit = val; saveStore(); }
+
+// ---------- SYNC ----------
+const DEFAULT_SHEET_URL = ''; // ใส่ URL Apps Script ของโค้ชตรงนี้ ลูกค้าจะไม่ต้องวางเอง
+
+function getSheetUrl() {
+  return (LS.get('sheetUrl') || DEFAULT_SHEET_URL || '').trim();
+}
+
+// ชื่อชีตที่จะส่ง: ถ้าชื่อซ้ำกันจะต่อเลขท้ายให้ ไม่ให้ชีตทับกัน
+function syncName(c) {
+  const base = (c.name || '').trim() || 'ลูกค้า';
+  const same = store.clients.filter(x => ((x.name || '').trim() || 'ลูกค้า') === base);
+  const idx = same.indexOf(c);
+  return idx > 0 ? `${base} ${idx + 1}` : base;
 }
 
 function openSyncModal() {
-  const member = localStorage.getItem('memberName') || 'ไม่ระบุ';
-  const goal = localStorage.getItem('userGoal') || '-';
-  const limit = localStorage.getItem('userLimit') || '-';
-  const doneCount = Object.values(data).filter(d => d.completed).length;
+  const urlInp = document.getElementById('sheetUrl');
+  if (urlInp) urlInp.value = getSheetUrl();
+  const c = activeClient();
+  const doneCount = Object.values(c.data).filter(d => d.completed).length;
   const preview = document.getElementById('syncPreview');
   if (preview) {
     preview.innerHTML = `
-      👤 Member: <b style="color:#fff">${member}</b><br>
-      🎯 Goal: <b style="color:#fff">${goal}</b><br>
-      ⚠️ Limitations: <b style="color:#fff">${limit}</b><br>
+      👤 Member: <b style="color:#fff">${esc(syncName(c))}</b><br>
+      🎯 Goal: <b style="color:#fff">${esc(c.goal) || '-'}</b><br>
+      ⚠️ Limitations: <b style="color:#fff">${esc(c.limit) || '-'}</b><br>
       📅 วันที่เสร็จ: <b style="color:#fff">${doneCount} / 30 วัน</b><br>
-      📦 ข้อมูลทั้งหมด ${Object.keys(data).length} วัน
+      👥 ลูกค้าทั้งหมดในแอป: <b style="color:#fff">${store.clients.length} คน</b>
     `;
   }
   document.getElementById('syncModal').style.display = 'block';
@@ -1267,23 +1469,15 @@ function closeSyncModal() {
   document.getElementById('syncStatus').textContent = '';
 }
 
-async function doSync() {
-  const url = (localStorage.getItem('sheetUrl') || '').trim();
-  if (!url) {
-    document.getElementById('syncStatus').innerHTML = '<span style="color:#ff4444">❌ กรุณาใส่ URL ของ Apps Script ก่อน</span>';
-    return;
-  }
-
-  const status = document.getElementById('syncStatus');
-  status.innerHTML = '<span style="color:#aaa">⏳ กำลังส่งข้อมูล...</span>';
-
-  const payload = {
-    member: localStorage.getItem('memberName') || '',
-    goal: localStorage.getItem('userGoal') || '',
-    limitations: localStorage.getItem('userLimit') || '',
+function buildPayload(c) {
+  const cd = c.data || {};
+  return {
+    member: syncName(c),
+    goal: c.goal || '',
+    limitations: c.limit || '',
     syncedAt: new Date().toISOString(),
-    days: Object.keys(data).map(d => {
-      const day = data[d];
+    days: Object.keys(cd).map(d => {
+      const day = cd[d];
       const ci = day.checkin || {};
       return {
         day: parseInt(d),
@@ -1296,39 +1490,55 @@ async function doSync() {
         illness: ci.illness || '',
         exercises: (day.exercises || []).map(ex => ({
           name: ex.name || '',
-          sets: (ex.sets || []).map(s => `${s.weight||0}kg×${s.reps||0}`).join(' | ')
+          sets: (ex.sets || []).map(s => `${s.weight || 0}kg×${s.reps || 0}`).join(' | ')
         })),
         notes: day.notes || ''
       };
     })
   };
+}
 
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-    const text = await res.text();
-    if (text.includes('OK') || res.ok) {
-      status.innerHTML = '<span style="color:var(--green)">✅ ส่งข้อมูลสำเร็จ!</span>';
-    } else {
-      status.innerHTML = `<span style="color:#ff4444">❌ ผิดพลาด: ${text.slice(0,80)}</span>`;
-    }
-  } catch (e) {
-    status.innerHTML = `<span style="color:#ff4444">❌ ไม่สามารถเชื่อมต่อได้: ${e.message}</span>`;
+async function postClient(url, c) {
+  const res = await fetch(url, { method: 'POST', body: JSON.stringify(buildPayload(c)) });
+  const text = await res.text();
+  if (!(text.includes('OK') || res.ok)) throw new Error(text.slice(0, 80));
+}
+
+async function doSync(all) {
+  const status = document.getElementById('syncStatus');
+  const url = getSheetUrl();
+  if (!url) {
+    status.innerHTML = '<span style="color:#ff4444">❌ กรุณาใส่ URL ของ Apps Script ก่อน</span>';
+    return;
+  }
+  const list = all ? store.clients.slice() : [activeClient()];
+  let ok = 0;
+  const failed = [];
+  for (let i = 0; i < list.length; i++) {
+    status.innerHTML = `<span style="color:#aaa">⏳ กำลังส่ง ${i + 1}/${list.length}...</span>`;
+    try { await postClient(url, list[i]); ok++; }
+    catch (e) { failed.push(syncName(list[i])); }
+  }
+  if (!failed.length) {
+    status.innerHTML = `<span style="color:var(--green)">✅ ส่งสำเร็จ ${ok} คน</span>`;
+  } else {
+    status.innerHTML = `<span style="color:#ff4444">❌ ส่งไม่สำเร็จ: ${esc(failed.join(', '))}<br>(สำเร็จ ${ok} คน) ลองใหม่อีกครั้ง</span>`;
   }
 }
 
 // INIT
+if (LS.get('sideCollapsed')) toggleSide();
 renderDayNav();
+renderClientTabs();
+loadClientFields();
 renderDay();
-// Restore member name, goal, limitations
-const savedMember = localStorage.getItem('memberName');
-if (savedMember) { const inp = document.getElementById('memberInput'); if (inp) inp.value = savedMember; }
-const savedGoal = localStorage.getItem('userGoal');
-if (savedGoal) { const inp = document.getElementById('goalInput'); if (inp) inp.value = savedGoal; }
-const savedLimit = localStorage.getItem('userLimit');
-if (savedLimit) { const inp = document.getElementById('limitInput'); if (inp) inp.value = savedLimit; }
+setHeaderVar();
+window.addEventListener('resize', setHeaderVar);
+window.addEventListener('load', setHeaderVar);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeaderVar);
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { try { navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) {} });
+}
 </script>
 </body>
 </html>
